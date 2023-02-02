@@ -1,5 +1,7 @@
 const { v4: uuidv4 } = require('uuid');
 const { validationResult } = require('express-validator');
+
+const getCoordsForAddress = require('../util/location');
 const HttpError = require('../models/http-error');
 
 let DUMMY_PLACES = [
@@ -40,6 +42,7 @@ const getPlacesByUserId = (req, res, next) => {
   res.json({ places });
 };
 
+// with async throw does not work properly, instead use next()
 const createPlace = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -53,7 +56,7 @@ const createPlace = (req, res, next) => {
     id: uuidv4(),
     title,
     description,
-    location: coordinates,
+    location: getCoordsForAddress(),
     address,
     creator,
   };
